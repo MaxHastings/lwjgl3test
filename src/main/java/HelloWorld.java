@@ -37,25 +37,6 @@ public class HelloWorld {
         glfwTerminate();
         glfwSetErrorCallback(null).free();
 
-
-        float[] vaoData = {
-                -1.0f, -1.0f, 0.0f,
-                1.0f, -1.0f, 0.0f,
-                0.0f,  1.0f, 0.0f,
-        };
-
-        //Generate a new vertex buffer
-        vaoId = glGenBuffers();
-
-        //Bind to the vertex buffer
-        glBindBuffer(GL_ARRAY_BUFFER, vaoId);
-
-        //Push our vertices data to our Vertex buffer
-        glBufferData(GL_ARRAY_BUFFER, vaoData, GL_STATIC_DRAW);
-
-        //Unbind from our Vertex buffer
-        glBindBuffer(GL_ARRAY_BUFFER,0);
-
     }
 
     private void init() {
@@ -109,6 +90,7 @@ public class HelloWorld {
 
         // Make the window visible
         glfwShowWindow(window);
+
     }
 
     private void loop() {
@@ -118,6 +100,24 @@ public class HelloWorld {
         // creates the GLCapabilities instance and makes the OpenGL
         // bindings available for use.
         GL.createCapabilities();
+
+        float[] vaoData = {
+                -1.0f, -1.0f, 0.0f,
+                1.0f, -1.0f, 0.0f,
+                0.0f,  1.0f, 0.0f,
+        };
+
+        //Generate a new vertex buffer
+        vaoId = glGenBuffers();
+
+        //Bind to the vertex buffer
+        glBindBuffer(GL_ARRAY_BUFFER, vaoId);
+
+        //Push our vertices data to our Vertex buffer
+        glBufferData(GL_ARRAY_BUFFER, vaoData, GL_STATIC_DRAW);
+
+        //Unbind from our Vertex buffer
+        glBindBuffer(GL_ARRAY_BUFFER,0);
 
         // Set the clear color
         glClearColor(1.0f, 0.0f, 0.0f, 0.0f);
