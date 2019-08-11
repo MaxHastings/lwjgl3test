@@ -8,6 +8,11 @@ import java.nio.*;
 import static org.lwjgl.glfw.Callbacks.*;
 import static org.lwjgl.glfw.GLFW.*;
 import static org.lwjgl.opengl.GL11.*;
+import static org.lwjgl.opengl.GL15.*;
+import static org.lwjgl.opengl.GL15C.GL_ARRAY_BUFFER;
+import static org.lwjgl.opengl.GL20.*;
+import static org.lwjgl.opengl.GL30C.glBindVertexArray;
+import static org.lwjgl.opengl.GL30C.glGenVertexArrays;
 import static org.lwjgl.system.MemoryStack.*;
 import static org.lwjgl.system.MemoryUtil.*;
 
@@ -15,6 +20,8 @@ public class HelloWorld {
 
     // The window handle
     private long window;
+
+    private static int vaoId;
 
     public void run() {
         System.out.println("Hello LWJGL " + Version.getVersion() + "!");
@@ -29,6 +36,26 @@ public class HelloWorld {
         // Terminate GLFW and free the error callback
         glfwTerminate();
         glfwSetErrorCallback(null).free();
+
+
+        float[] vaoData = {
+                -1.0f, -1.0f, 0.0f,
+                1.0f, -1.0f, 0.0f,
+                0.0f,  1.0f, 0.0f,
+        };
+
+        //Generate a new vertex buffer
+        vaoId = glGenBuffers();
+
+        //Bind to the vertex buffer
+        glBindBuffer(GL_ARRAY_BUFFER, vaoId);
+
+        //Push our vertices data to our Vertex buffer
+        glBufferData(GL_ARRAY_BUFFER, vaoData, GL_STATIC_DRAW);
+
+        //Unbind from our Vertex buffer
+        glBindBuffer(GL_ARRAY_BUFFER,0);
+
     }
 
     private void init() {
@@ -100,12 +127,28 @@ public class HelloWorld {
         while ( !glfwWindowShouldClose(window) ) {
             glClear(GL_COLOR_BUFFER_BIT | GL_DEPTH_BUFFER_BIT); // clear the framebuffer
 
+            render();
+
             glfwSwapBuffers(window); // swap the color buffers
 
             // Poll for window events. The key callback above will only be
             // invoked during this call.
             glfwPollEvents();
         }
+    }
+
+    private static void render(){
+        // 1st attribute buffer : vertices
+        glEnableVertexAttribArray(0);
+
+        glBindBuffer(GL_ARRAY_BUFFER, vaoId);
+
+        glVertexAttribPointer(0, 3, GL_FLOAT, false, 0, 0);
+
+        // Draw the triangle !
+        glDrawArrays(GL_TRIANGLES, 0, 3); // Starting from vertex 0; 3 vertices total -> 1 triangle
+        glDisableVertexAttribArray(0);
+        glBindBuffer(GL_ARRAY_BUFFER,0);
     }
 
     public static void main(String[] args) {
